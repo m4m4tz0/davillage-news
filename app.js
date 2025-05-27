@@ -17,7 +17,7 @@ function login() {
     document.getElementById('login').classList.add('hidden');
 
     if (reporters.includes(currentUser)) {
-        document.getElementById('postNews').classList.remove('hidden');
+        document.getElementById('upload').classList.remove('hidden');
     }
 }
 
