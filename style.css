@@ -1,19 +1,46 @@
 body {
   font-family: Arial, sans-serif;
-  max-width: 600px;
-  margin: 2em auto;
+  margin: 20px;
+  background: #f9f9f9;
+  color: #222;
 }
 
-.hidden {
-  display: none;
+#news h2 {
+  margin-bottom: 20px;
 }
 
-#upload {
-  margin-bottom: 2em;
+.news-card {
+  display: flex;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
 }
 
-#news > div {
-  border: 1px solid #ccc;
-  margin: 0.5em 0;
-  padding: 0.5em;
+.news-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.news-image {
+  width: 160px;
+  height: 120px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.news-text {
+  padding: 12px 16px;
+  flex-grow: 1;
+}
+
+.news-text h3 {
+  margin: 0 0 10px 0;
+}
+
+.brief {
+  color: #555;
+  font-size: 0.9em;
 }

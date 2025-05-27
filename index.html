@@ -1,31 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Da Village News</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <title>Da Village News</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-    <div id="login">
-        <h2>ΣΥΝΔΕΣΟΥ</h2>
-        <input type="text" id="username" placeholder="Όνομα χρήστη" />
-        <button id="loginBtn">ΣΥΝΔΕΣΗ</button>
-        <p id="loginMsg"></p>
-    </div>
+  <div id="news">
+    <h2>ΤΕΛΕΥΤΑΙΕΣ ΕΙΔΗΣΕΙΣ</h2>
+    <div id="newsList">Loading news...</div>
+  </div>
 
-    <div id="upload" class="hidden">
-        <h2>ΑΝΑΡΤΗΣΗ ΕΙΔΗΣΗΣ</h2>
-        <input type="text" id="newsTitle" placeholder="Τίτλος" /><br /><br />
-        <textarea id="newsContent" placeholder="Περιεχόμενο" rows="5"></textarea><br /><br />
-        <button id="postNewsBtn">ΝΕΑ ΑΝΑΡΤΗΣΗ</button>
-    </div>
-
-    <div id="news">
-        <h2>ΤΕΛΕΥΤΑΙΕΣ ΕΙΔΗΣΕΙΣ</h2>
-        <div id="newsList">...</div>
-    </div>
-
-    <script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

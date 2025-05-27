@@ -1,63 +1,70 @@
-const reporters = ['reporter'];
+const AIRTABLE_PAT = 'patZDzRx04Fg2wzyd.cd7a590b5066ed0aa36920c645a9efda134bb4f4f5a150973704e25dd71f930e';  // <-- Insert your PAT here
+const BASE_ID = 'DaVillageNews';       // <-- Insert your Base ID here
+const TABLE_NAME = 'DaVillageNews';        // <-- Your Airtable table name
 
-let currentUser = null;
-let newsList = [];
+async function fetchApprovedNews() {
+  const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}?filterByFormula=Approved`;
 
-document.getElementById('loginBtn').addEventListener('click', login);
-document.getElementById('postNewsBtn').addEventListener('click', uploadNews);
-
-function login() {
-    const name = document.getElementById('username').value.trim().toLowerCase();
-    if (!name) {
-        alert('Παρακαλώ εισάγετε ένα όνομα χρήστη.');
-        return;
-    }
-    currentUser = name;
-    document.getElementById('loginMsg').textContent = `Συνδέθηκες ως: ${currentUser}`;
-    document.getElementById('login').classList.add('hidden');
-
-    if (reporters.includes(currentUser)) {
-        document.getElementById('upload').classList.remove('hidden');
-    }
-}
-
-function uploadNews() {
-    const title = document.getElementById('newsTitle').value.trim();
-    const content = document.getElementById('newsContent').value.trim();
-    if (!title || !content) {
-        alert('Παρακαλώ συμπληρώστε όλα τα πεδία.');
-        return;
-    }
-
-    alert('Uploading articles directly to GitHub via API will be implemented next.');
-
-    document.getElementById('newsTitle').value = '';
-    document.getElementById('newsContent').value = '';
-}
-
-async function fetchNews() {
-    try {
-        const res = await fetch('data/news.json' + Date.now());
-        if (!res.ok) throw new Error('Αποτυχία φόρτωσης ειδήσεων');
-        newsList = await res.json();
-    } catch {
-        newsList = [];
-    }
-    renderNews();
-}
-
-function renderNews() {
-    const container = document.getElementById('newsList');
-    if (newsList.length === 0) {
-        container.innerHTML = '<p>Δεν υπάρχουν διαθέσιμες ειδήσεις.</p>';
-        return;
-    }
-    container.innerHTML = '';
-    newsList.forEach(item => {
-        const el = document.createElement('div');
-        el.innerHTML = `<h3>${item.title}</h3><small>by ${item.author} on ${item.date}</small><p>${item.content}</p>`;
-        container.appendChild(el);
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${AIRTABLE_PAT}` }
     });
+    if (!res.ok) {
+      throw new Error(`Failed to fetch news: ${res.statusText}`);
+    }
+
+    const data = await res.json();
+
+    return data.records.map(record => {
+      const fields = record.fields;
+      return {
+        id: record.id,
+        title: fields.Title || '',
+        brief: fields.Brief || '',
+        author: fields.Author || '',
+        date: fields.Date || '',
+        content: fields.Content || '',
+        imageUrl: fields.Image && fields.Image[0] ? fields.Image[0].url : 'placeholder.jpg'
+      };
+    });
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
 }
 
-fetchNews();
+function renderNewsFeed(newsList) {
+  const container = document.getElementById('newsList');
+  container.innerHTML = '';
+
+  if (newsList.length === 0) {
+    container.innerHTML = '<p>Δεν υπάρχουν διαθέσιμες ειδήσεις.</p>';
+    return;
+  }
+
+  newsList.forEach(article => {
+    const card = document.createElement('div');
+    card.className = 'news-card';
+    card.dataset.id = article.id;
+
+    card.innerHTML = `
+      <img src="${article.imageUrl}" alt="${article.title}" class="news-image" />
+      <div class="news-text">
+        <h3>${article.title}</h3>
+        <p class="brief">${article.brief}</p>
+      </div>
+    `;
+
+    card.addEventListener('click', () => {
+      window.location.hash = article.id;
+      // Later: open detailed view
+    });
+
+    container.appendChild(card);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const news = await fetchApprovedNews();
+  renderNewsFeed(news);
+});
